@@ -1,0 +1,37 @@
+/* basic styling for navbar */
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: grey;
+    }
+
+    /* puts everything left-aligned */
+    ul li {
+  float: left;
+    }
+    
+    /* text color when not hovered over */
+    ul li a{
+        display: block;
+        color: black;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+
+    /* just changes the look of a navbar tab
+    when you hover over it */
+    ul li a:hover:not(.active){
+        background-color: darkslategray;
+        color: whitesmoke;
+    }
+
+    /* this affects the navbar tab set to "active"
+    which would be the tab correlated to the 
+    page the user is on */
+    ul li a.active{
+        background-color: darkslategrey;
+        color: whitesmoke;
+    }
