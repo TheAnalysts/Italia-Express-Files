@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Itali Express</title>
-<?php
-    echo '<style>
+    <style>
             body {
                 margin: 0;
                 font-family: Arial, sans-serif;
@@ -60,9 +59,10 @@
 
             /* Content Section */
             .content {
-                display: inline-block;
-                margin: 20px auto;
+                display: block;
                 text-align: center;
+                max-width: 1200px;
+                margin: 0 auto;
             }
 
             .content h1 {
@@ -81,9 +81,44 @@
                 border-radius: 10px;
                 margin-bottom: 10px;
             }
+            .menu-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+                padding: 20px;
+                justify-content:center;
+            }
 
-        </style>';
-    ?>
+            .menu-item {
+                background: #f8f8f8;
+                border-radius: 15px;
+                padding: 15px;
+                text-align: center;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                transition: transform 0.2s;
+            }
+
+            .menu-item:hover {
+                transform: scale(1.05);
+            }
+
+            .menu-item img {
+                width: 100%;
+                height: 180px;
+                object-fit: cover;
+                border-radius: 10px;
+            }
+
+            .menu-item h2 {
+                margin: 10px 0 5px;
+                color: green;
+            }
+
+            .menu-item p {
+                margin: 5px 0;
+            }
+
+        </style>
 </head>
 
 <body>
@@ -105,20 +140,23 @@
     <div class="content">
         <h1>Menu</h1>
         <p>Italian food delivered straight to your door!</p>
-        <?php include 'db.php'; ?>
-        <?php
-        $sql = "SELECT * FROM food";
-        $result = $conn->query($sql);
         
-        while ($row = $result->fetch_assoc()) {
-            echo '<div class="content">';
-            echo '<img src="' . $row['Image'] . '" alt="' . $row['Name'] . '">';
-            echo "<h2>" . $row['Name'] . "</h2>";
-            echo "<p>" . $row['Description'] . "</p>";
-            echo "<p>Price: $" . $row['Pricing'] . "</p>";
-            echo '</div>';
-        }
-        ?>
+        <div class="menu-grid">
+            <?php include 'db.php'; ?>
+            <?php
+            $sql = "SELECT * FROM food";
+            $result = $conn->query($sql);
+            
+            while ($row = $result->fetch_assoc()) {
+                echo '<div class="menu-item">';
+                echo '<img src="' . $row['Image'] . '" alt="' . $row['Name'] . '">';
+                echo "<h2>" . $row['Name'] . "</h2>";
+                echo "<p>" . $row['Description'] . "</p>";
+                echo "<p>Price: $" . $row['Pricing'] . "</p>";
+                echo '</div>';
+            }
+            ?>
+        </div>
     </div>
 
 </body>
