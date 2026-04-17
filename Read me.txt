@@ -1,6 +1,0 @@
-How to Import (To my knowledge) 
-
-Open phpMyAdmin on your machine
-Create a new database with the same name
-Click the Import tab
-Upload the .sql file and click Go
