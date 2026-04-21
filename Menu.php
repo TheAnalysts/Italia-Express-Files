@@ -74,35 +74,54 @@ session_start();
             <?php
             $sql = "SELECT * FROM food";
             $result = $conn->query($sql);
-            
+
+            $counter = 1;
+
             while ($row = $result->fetch_assoc()) {
+                $itemId = $counter;
+
                 echo '<div class="menu-item">';
-                echo '<img src="' . $row['Image'] . '" alt="' . $row['Name'] . '">';
-                echo "<h2>" . $row['Name'] . "</h2>";
-                echo "<p>" . $row['Description'] . "</p>";
-                echo "<p>Price: $" . $row['Pricing'] . "</p>";
-                
-                echo '<form method="POST" action="AddToCart.php">';
-                echo '<input type="hidden" name="U_ID" value="1">';
-                echo '<input type="hidden" name="FoodName" value="' . $row['Name'] . '">';
-                echo '<input type="hidden" name="Price" value="' . $row['Pricing'] . '">';
+                echo '<img src="' . htmlspecialchars($row['Image']) . '" alt="' . htmlspecialchars($row['Name']) . '">';
+                echo "<h2>" . htmlspecialchars($row['Name']) . "</h2>";
+                echo "<p>" . htmlspecialchars($row['Description']) . "</p>";
+                echo "<p>Price: $" . htmlspecialchars($row['Pricing']) . "</p>";
 
-                echo '<div class="quantity-controls">';
-                echo '<button type="button" onclick="changeQuantity(\'' . $row['Name'] . '\', -1)">-</button>';
-                echo '<input type="text" id="qty_' . $row['Name'] . '" name="Quantity" value="1" readonly>';
-                echo '<button type="button" onclick="changeQuantity(\'' . $row['Name'] . '\', 1)">+</button>';
+                if (isset($_SESSION['customer_id'])) {
+                    echo '<form method="POST" action="AddToCart.php">';
+                    echo '<input type="hidden" name="FoodName" value="' . htmlspecialchars($row['Name'], ENT_QUOTES) . '">';
+                    echo '<input type="hidden" name="Price" value="' . htmlspecialchars($row['Pricing']) . '">';
+
+                    echo '<div class="quantity-controls">';
+                    echo '<button type="button" onclick="changeQuantity(' . $itemId . ', -1)">-</button>';
+                    echo '<input type="text" id="qty_' . $itemId . '" name="Quantity" value="1" readonly>';
+                    echo '<button type="button" onclick="changeQuantity(' . $itemId . ', 1)">+</button>';
+                    echo '</div>';
+
+                    echo '<button type="submit" class="cart-btn">Add to Cart</button>';
+                    echo '</form>';
+                } else {
+                    echo '<form method="GET" action="login.php">';
+
+                    echo '<div class="quantity-controls">';
+                    echo '<button type="button" onclick="changeQuantity(' . $itemId . ', -1)">-</button>';
+                    echo '<input type="text" id="qty_' . $itemId . '" value="1" readonly>';
+                    echo '<button type="button" onclick="changeQuantity(' . $itemId . ', 1)">+</button>';
+                    echo '</div>';
+
+                    echo '<button type="submit" class="cart-btn">Add to Cart</button>';
+                    echo '</form>';
+                }
+
                 echo '</div>';
 
-                echo '<button type="submit" class="cart-btn">Add to Cart</button>';
-                echo '</form>';
-                echo '</div>';
+                $counter++;
             }
             ?>
         </div>
     </div>
     <script>
-    function changeQuantity(foodId, amount) {
-        let qtyInput = document.getElementById("qty_" + foodId);
+    function changeQuantity(itemId, amount) {
+        let qtyInput = document.getElementById("qty_" + itemId);
         let currentValue = parseInt(qtyInput.value);
 
         currentValue += amount;

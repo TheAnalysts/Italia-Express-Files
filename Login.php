@@ -15,6 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows == 1) {
         $row = $result->fetch_assoc();
 
+        $_SESSION['customer_id'] = $row['U_ID'];
         $_SESSION['customer_email'] = $row['Email'];
         $_SESSION['customer_name'] = $row['Name'];
 
@@ -83,6 +84,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: red;
             margin-top: 10px;
         }
+        .switch-form {
+            margin-top: 15px;
+            font-size: 15px;
+            color: #444;
+        }
+
+        .switch-form a {
+            color: green;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .switch-form a:hover {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -96,6 +112,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <button type="submit">Log In</button>
     </form>
 
+
+    <p class="switch-form">
+        Don't have an account?
+        <a href="Signup.php">Sign Up!</a>
     <?php
     if (!empty($error)) {
         echo "<p class='error'>$error</p>";

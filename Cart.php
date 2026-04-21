@@ -1,5 +1,13 @@
 <?php include 'db.php'; ?>
 <?php include 'header.php'; ?>
+<?php
+if (!isset($_SESSION['customer_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$u_id = $_SESSION['customer_id'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -128,7 +136,6 @@
     <h1>Your Cart</h1>
 
     <?php
-    $u_id = 1;
     $sql = "SELECT * FROM item_purchase WHERE U_ID = '$u_id' ORDER BY TimeStamp DESC";
     $result = $conn->query($sql);
 
@@ -148,7 +155,6 @@
 
             echo "<td>
                     <form method='POST' action='UpdateCart.php' class='qty-form'>
-                        <input type='hidden' name='U_ID' value='" . $row['U_ID'] . "'>
                         <input type='hidden' name='FoodName' value='" . htmlspecialchars($row['FoodName'], ENT_QUOTES) . "'>
                         <button type='submit' name='action' value='decrease' class='qty-btn'>-</button>
                         <span class='qty-number'>" . $row['Quantity'] . "</span>
@@ -171,12 +177,10 @@
 
         echo "<div class='action-buttons'>
                 <form method='POST' action='ClearCart.php'>
-                    <input type='hidden' name='U_ID' value='1'>
                     <button type='submit' class='clear-btn'>Clear Cart</button>
                 </form>
 
                 <form method='POST' action='Checkout.php'>
-                    <input type='hidden' name='U_ID' value='1'>
                     <button type='submit' class='checkout-btn'>Checkout</button>
                 </form>
               </div>";

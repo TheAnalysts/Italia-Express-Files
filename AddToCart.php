@@ -1,8 +1,15 @@
 <?php
+session_start();
 include 'db.php';
 
+if (!isset($_SESSION['customer_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$u_id = $_SESSION['customer_id'];
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $u_id = $_POST['U_ID'];
+    $u_id = $_SESSION['customer_id'];
     $foodName = $_POST['FoodName'];
     $price = $_POST['Price'];
     $quantity = $_POST['Quantity'];

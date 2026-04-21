@@ -1,36 +1,44 @@
 <?php
+session_start();
 include 'db.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $u_id = $_POST['U_ID'];
+if (!isset($_SESSION['customer_id'])) {
+    header("Location: login.php");
+    exit();
+}
 
-    // Get all items from cart
+$u_id = $_SESSION['customer_id'];
+$grandTotal = 0;
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
     $sql = "SELECT * FROM item_purchase WHERE U_ID = '$u_id'";
     $result = $conn->query($sql);
 
-    $grandTotal = 0;
     $cartItems = array();
 
-    // Calculate grand total and store cart items
     while ($row = $result->fetch_assoc()) {
         $grandTotal += $row['Total'];
         $cartItems[] = $row;
     }
 
-    // Insert each item into food_order table (all items share same OrderID via auto-increment grouping)
     if (count($cartItems) > 0) {
+        $orderId = time() . rand(1000, 9999);
+
         foreach ($cartItems as $item) {
             $foodName = $item['FoodName'];
             $quantity = $item['Quantity'];
             $itemTotal = $item['Total'];
 
-            $insertOrderSql = "INSERT INTO food_order (U_ID, FoodName, Quantity, ItemTotal, Total, TimeStamp)
-                               VALUES ('$u_id', '$foodName', '$quantity', '$itemTotal', '$grandTotal', NOW())";
+            $insertOrderSql = "INSERT INTO food_order 
+                (OrderID, U_ID, FoodName, Quantity, ItemTotal, Total, TimeStamp)
+                VALUES 
+                ('$orderId', '$u_id', '$foodName', '$quantity', '$itemTotal', '$grandTotal', NOW())";
+
             $conn->query($insertOrderSql);
         }
     }
 
-    // Clear the cart after checkout
     $clearSql = "DELETE FROM item_purchase WHERE U_ID = '$u_id'";
     $conn->query($clearSql);
 }
